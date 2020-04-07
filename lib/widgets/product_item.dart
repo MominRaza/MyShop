@@ -1,55 +1,76 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/product_detail_screen.dart';
+import '../providers/product.dart';
+import '../providers/cart.dart';
 
 class ProductItem extends StatelessWidget {
-  final String id;
-  final String title;
-  final String imageUrl;
-  final double price;
+  // final String id;
+  // final String title;
+  // final String imageUrl;
+  // final double price;
 
-  ProductItem(this.id, this.title, this.imageUrl, this.price);
+  // ProductItem(this.id, this.title, this.imageUrl, this.price);
   // 7668250117
   @override
   Widget build(BuildContext context) {
+    final product = Provider.of<Product>(context, listen: false);
+    final cart = Provider.of<Cart>(context, listen: false);
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
-        header: GridTileBar(
-          backgroundColor: Colors.black54,
-          title: Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
+        header: GestureDetector(
+          onTap: () {
+            Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
+                arguments: product.id);
+          },
+          child: GridTileBar(
+            backgroundColor: Colors.black54,
+            title: Text(
+              product.title,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+              ),
             ),
           ),
         ),
-        child: InkWell(
-          splashColor: Theme.of(context).accentColor,
-          borderRadius: BorderRadius.circular(10),
+        child: GestureDetector(
           onTap: () {
-            Navigator.of(context).pushNamed(ProductDetailScreen.routeName);
+            Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
+                arguments: product.id);
           },
           child: Image.network(
-            imageUrl,
+            product.imageUrl,
             fit: BoxFit.cover,
           ),
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black87,
-          leading: IconButton(
-            icon: Icon(Icons.favorite),
-            onPressed: () {},
-            color: Theme.of(context).accentColor,
+          leading: Consumer<Product>(
+            builder: (context, product, child) => IconButton(
+              icon: Icon(
+                product.isFavorite ? Icons.favorite : Icons.favorite_border,
+              ),
+              onPressed: product.toggleFavoriteStatus,
+              color: Theme.of(context).accentColor,
+            ),
           ),
           title: Text(
-            '\$ $price',
+            '\$${product.price}',
             textAlign: TextAlign.center,
           ),
           trailing: IconButton(
             icon: Icon(Icons.add_shopping_cart),
-            onPressed: () {},
+            onPressed: () {
+              cart.addItem(
+                product.id,
+                product.price,
+                product.title,
+              );
+            },
             color: Theme.of(context).accentColor,
           ),
         ),
