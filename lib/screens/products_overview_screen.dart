@@ -3,7 +3,10 @@ import 'package:provider/provider.dart';
 
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
+import '../widgets/app_drawer.dart';
+
 import '../providers/cart.dart';
+
 import './cart_screen.dart';
 
 enum FilterOptions { Favorites, All }
@@ -54,27 +57,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           ),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            DrawerHeader(
-              child: Text('My Shop'),
-            ),
-            ListTile(
-              leading: Icon(Icons.shop),
-              title: Text('My Shop'),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              leading: Icon(Icons.shopping_cart),
-              title: Text('My Orders'),
-            ),
-          ],
-        ),
-      ),
+      drawer: AppDrawer(),
       body: ProductsGrid(_showOnlyFavorites),
     );
   }
